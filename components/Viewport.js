@@ -9,7 +9,8 @@ class Viewport {
 
 		this.ctx = canvas.getContext('2d');
 
-		this.interval = undefined;
+		this.active = false;
+		this.timeout = undefined;
 		this.current_framerate = undefined;
 		this.last_frame_time = undefined;
 	}
@@ -125,7 +126,7 @@ class Viewport {
 		}
 	}
 
-	render_cycle() {
+	render_cycle(frametime) {
 		const time = Date.now();
 
 		if (this.last_frame_time) {
@@ -133,8 +134,13 @@ class Viewport {
 			this.current_framerate = 1000 / delta;
 		}
 
-		this.last_frame_time = time;
 		this.render();
+
+		const current_frame_time = Date.now() - time;
+		const time_to_next_frame = Math.max(0, frametime - current_frame_time);
+		this.timeout = setTimeout(() => this.render_cycle(frametime), time_to_next_frame);
+
+		this.last_frame_time = time;
 	}
 
 	/**
@@ -142,11 +148,10 @@ class Viewport {
 	 * @param {number} framerate Framerate to render the viewport at (in frames per second)
 	 * @returns {void}
 	 */
-	start(framerate) {
-		if (this.interval) this.stop();
-
-		this.render_cycle();
-		this.interval = setInterval(() => this.render_cycle(), 1000 / framerate);
+	start(framerate = 30) {
+		if (this.active) this.stop();
+		const frametime = 1000 / framerate;
+		this.render_cycle(frametime);
 	}
 
 	/**
@@ -154,8 +159,8 @@ class Viewport {
 	 * @returns {void}
 	 */
 	stop() {
-		clearInterval(this.interval);
-		this.interval = undefined;
+		clearTimeout(this.timeout);
+		this.active = false;
 		this.last_frame_time = undefined;
 		this.current_framerate = undefined;
 	}
