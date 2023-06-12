@@ -1,0 +1,22 @@
+* {
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	background-color: red;
+}
+
+#canvas {
+	position: absolute;
+	top: 0;
+	left: 0;
+
+	background-color: white;
+
+	cursor: grab;
+}
+
+#canvas.active {
+	cursor: grabbing;
+}
