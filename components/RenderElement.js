@@ -6,6 +6,29 @@ class RenderElement {
 	}
 
 	/**
+	 * Sets the position of the element
+	 * @param {Object} position Position of the element
+	 * @param {number} position.x
+	 * @param {number} position.y
+	 */
+	setPosition(position) {
+		this.position = position;
+	}
+
+	/**
+	 * Moves the element
+	 * @param {Object|number} delta Delta to move the element
+	 * @param {number} delta.x
+	 * @param {number} delta.y
+	 * @returns {void}
+	 */
+	move(delta) {
+		if (typeof delta === 'number') delta = { x: delta, y: delta };
+		this.position.x += delta.x;
+		this.position.y += delta.y;
+	}
+
+	/**
 	 * Returns the bounding box of the element
 	 * @returns {Object}
 	 * @returns {number} left
