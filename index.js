@@ -1,9 +1,12 @@
 import World from './components/World.js';
 import Box from './components/RenderElements/Box.js';
+import Circle from './components/RenderElements/Circle.js';
 
 const canvas = document.getElementById('canvas');
 const world = new World();
 const viewport = world.getViewport({ x: 0, y: 0 }, { x: window.innerWidth, y: window.innerHeight }, canvas);
+
+const circle_element = new Circle({ x: 400, y: 400 }, 100, 'rgba(0, 0, 0, 0.5)');
 
 function init() {
 	canvas.width = window.innerWidth;
@@ -17,7 +20,11 @@ function init() {
 	world.add(green_box);
 	world.add(blue_box);
 
-	viewport.render();
+	world.add(circle_element);
+
+	viewport.start(60);
+
+	setInterval(update, 1000 / 60);
 }
 
 function resizeCanvas() {
@@ -35,12 +42,29 @@ function resizeCanvas() {
 	viewport.setSize(newViewportSize);
 }
 
+function update() {
+	const startPosition = circle_element.getPosition();
+	const objectivePosition = viewport.getWorldPosition(mousePosition);
+
+	// speeds up if it is further away from the objective
+	const distance = Math.sqrt(Math.pow(objectivePosition.x - startPosition.x, 2) + Math.pow(objectivePosition.y - startPosition.y, 2));
+	const speed = Math.min(0.1 + distance / 1000, 1);
+
+	const delta = {
+		x: (objectivePosition.x - startPosition.x) * speed,
+		y: (objectivePosition.y - startPosition.y) * speed,
+	};
+
+	circle_element.move(delta);
+}
+
 window.addEventListener("resize", resizeCanvas, false);
 document.addEventListener("DOMContentLoaded", init, false);
 
 
 // Handle mouse inputs
 
+const mousePosition = { x: 0, y: 0 };
 var mouseIsClicked = false;
 
 function handleOnClick(e) {
@@ -54,6 +78,9 @@ function handleOnRelease(e) {
 }
 
 function handleOnMove(e) {
+	mousePosition.x = e.clientX;
+	mousePosition.y = e.clientY;
+
 	if (mouseIsClicked) {
 		const delta = { x: -e.movementX, y: -e.movementY };
 		const viewportDelta = viewport.getWorldDelta(delta);
