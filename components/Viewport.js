@@ -8,6 +8,10 @@ class Viewport {
 		this.world = world;
 
 		this.ctx = canvas.getContext('2d');
+
+		this.interval = undefined;
+		this.current_framerate = undefined;
+		this.last_frame_time = undefined;
 	}
 
 	/**
@@ -113,6 +117,47 @@ class Viewport {
 		renderElements.forEach(element => {
 			element.render(this.ctx, offset, scale);
 		});
+
+		if (this.current_framerate) {
+			this.ctx.fillStyle = '#000';
+			this.ctx.font = '12px sans-serif';
+			this.ctx.fillText(this.current_framerate.toFixed(2), 10, 20);
+		}
+	}
+
+	render_cycle() {
+		const time = Date.now();
+
+		if (this.last_frame_time) {
+			const delta = time - this.last_frame_time;
+			this.current_framerate = 1000 / delta;
+		}
+
+		this.last_frame_time = time;
+		this.render();
+	}
+
+	/**
+	 * Starts rendering the viewport at a given framerate
+	 * @param {number} framerate Framerate to render the viewport at (in frames per second)
+	 * @returns {void}
+	 */
+	start(framerate) {
+		if (this.interval) this.stop();
+
+		this.render_cycle();
+		this.interval = setInterval(() => this.render_cycle(), 1000 / framerate);
+	}
+
+	/**
+	 * Stops rendering the viewport
+	 * @returns {void}
+	 */
+	stop() {
+		clearInterval(this.interval);
+		this.interval = undefined;
+		this.last_frame_time = undefined;
+		this.current_framerate = undefined;
 	}
 
 }
