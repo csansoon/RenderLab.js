@@ -109,7 +109,7 @@ class Viewport {
 			y: this.canvas.height / this.size.y
 		}
 
-		this.ctx.clearRect(0, 0, this.size.x, this.size.y);
+		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 		renderElements.forEach(element => {
 			element.render(this.ctx, offset, scale);
 		});
