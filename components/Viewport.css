@@ -21,8 +21,8 @@
 	position: absolute;
 	top: calc(0 - var(--viewport-border-width));
 	left: calc(0 - var(--viewport-border-width));
-	right: calc(0 - var(--viewport-border-width));
-	bottom: calc(0 - var(--viewport-border-width));
+	width: calc(100% + var(--viewport-border-width) * 2);
+	height: calc(100% + var(--viewport-border-width) * 2);
 	background-color: #fff;
 	
 	outline: 2px solid #3b3b497e;

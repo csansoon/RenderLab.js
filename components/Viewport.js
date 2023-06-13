@@ -1,6 +1,8 @@
+import { Square } from './RenderElements.js';
+
 class Viewport {
 
-	constructor(position, size, canvas, world) {
+	constructor(position, size, canvas, world, renderElement = undefined) {
 		this.position = position;
 		this.size = size;
 		this.canvas = canvas;
@@ -12,6 +14,8 @@ class Viewport {
 		this.timeout = undefined;
 		this.current_framerate = undefined;
 		this.last_frame_time = undefined;
+
+		this.renderElement = renderElement;
 	}
 
 	/**
@@ -27,6 +31,8 @@ class Viewport {
 	 * @param {boolean} options.autoResize Whether or not the viewport should resize when the window resizes. Defaults to true
 	 * @param {boolean} options.moveOnDrag Whether or not the viewport should move when dragged. Defaults to true
 	 * @param {boolean} options.zoomOnScroll Whether or not the viewport should zoom when scrolled. Defaults to true
+	 * @param {boolean} options.visibleOnWorld Whether or not the viewport should be visible on the world. Defaults to false
+	 * @param {RenderElement} options.representationElement Element to represent the viewport on the world. Defaults to a black square
 	 */
 	static createViewport({
 		element,
@@ -35,12 +41,14 @@ class Viewport {
 		scale = 1,
 		options = {}
 	}) {
-		options = { ...{ // Default options:
+		options = {...{ // Default options
 			autoResize: true,
 			moveOnDrag: true,
 			zoomOnScroll: true,
+			visibleOnWorld: false,
+			representationElement: new Square({ thickness: 1, color: "black" }),
 		}, ...options };
-
+		
 		if (typeof element === 'string') {
 			element = document.querySelector(element);
 			if (!element) throw new ViewportError(`Element "${element}" not found`);
@@ -64,6 +72,13 @@ class Viewport {
 		if (options.autoResize) viewport.addResizeListener();
 		if (options.moveOnDrag) viewport.addDragListener();
 		if (options.zoomOnScroll) viewport.addZoomListener();
+		console.log("visible on world", options.visibleOnWorld);
+		if (options.visibleOnWorld) {
+			viewport.renderElement = options.representationElement;
+			viewport.renderElement.setPosition(position);
+			viewport.renderElement.size = size;
+			world.add(viewport.renderElement);
+		}
 
 		setTimeout(() => viewport.render(), 0);
 
@@ -82,6 +97,9 @@ class Viewport {
 	 */
 	setPosition(worldPosition) {
 		this.position = worldPosition;
+
+		if (this.renderElement) this.renderElement.setPosition(this.position);
+
 		this.render();
 	}
 
@@ -93,9 +111,10 @@ class Viewport {
 	 * @returns {void}
 	 */
 	move(worldDelta) {
-		this.position.x += worldDelta.x;
-		this.position.y += worldDelta.y;
-		this.render();
+		this.setPosition({
+			x: this.position.x + worldDelta.x,
+			y: this.position.y + worldDelta.y
+		})
 	}
 
 	/**
@@ -108,6 +127,9 @@ class Viewport {
 	setSize(worldSize) {
 		this.size.x = worldSize.x;
 		this.size.y = worldSize.y;
+
+		if (this.renderElement) this.renderElement.setSize(this.size);
+
 		this.render();
 	}
 
@@ -120,9 +142,10 @@ class Viewport {
 	 */
 	scale(delta) {
 		if (typeof delta === 'number') delta = { x: delta, y: delta };
-		this.size.x *= delta.x;
-		this.size.y *= delta.y;
-		this.render();
+		this.setSize({
+			x: this.size.x * delta.x,
+			y: this.size.y * delta.y
+		});
 	}
 
 

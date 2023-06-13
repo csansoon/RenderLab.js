@@ -37,13 +37,19 @@ const circle_element = world.add(new Circle({
 
 /* ------------------ Create virtual cameras for the world ------------------ */
 
-const viewport = world.createViewport({ element: "#canvas" });
+const viewport = world.createViewport({
+	element: "#canvas",
+	options: {
+		visibleOnWorld: true,
+	},
+});
 const viewport2 = world.createViewport({
 	element: "#canvas2",
 	options: {
 		moveOnDrag: false,
 		zoomOnScroll: false,
-	}
+		visibleOnWorld: true,
+	},
 });
 
 viewport.start(60);
