@@ -1,4 +1,4 @@
-
+import { lerp } from "../utils/Algorithms.js";
 class RenderElement {
 
 	constructor(position) {
@@ -27,6 +27,20 @@ class RenderElement {
 		this.position.x += delta.x;
 		this.position.y += delta.y;
 	}
+
+	/**
+	 * Moves the element towards a position following a lerping function
+	 * @param {Object} position Position to move towards
+	 * @param {number} position.x
+	 * @param {number} position.y
+	 * @param {number} interpolation Interpolation value (0-1). It represents the percentage of the interpolation
+	 * @returns {void}
+	 */
+	lerpTo(position, interpolation) {
+		this.position.x = lerp(this.position.x, position.x, interpolation);
+		this.position.y = lerp(this.position.y, position.y, interpolation);
+	}
+
 
 	/**
 	 * Returns the bounding box of the element
