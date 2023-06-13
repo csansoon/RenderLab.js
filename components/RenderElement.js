@@ -1,7 +1,15 @@
 import { lerp } from "../utils/Algorithms.js";
 class RenderElement {
 
-	constructor(position) {
+	/**
+	 * Creates a new RenderElement
+	 * @param {Object} position Position of the element
+	 * @param {number} position.x
+	 * @param {number} position.y
+	 */
+	constructor({
+		position = { x: 0, y: 0 },
+	}) {
 		this.position = position;
 	}
 

@@ -2,8 +2,22 @@ import RenderElement from "../RenderElement.js";
 
 class Box extends RenderElement {
 
-	constructor(position, size, color) {
-		super(position);
+	/**
+	 * Creates a new Box
+	 * @param {Object} position Position of the element
+	 * @param {number} position.x
+	 * @param {number} position.y
+	 * @param {Object} size Size of the box
+	 * @param {number} size.x
+	 * @param {number} size.y
+	 * @param {string} color Color of the box
+	 */
+	constructor({
+		position = { x: 0, y: 0 },
+		size = { x: 1, y: 1 },
+		color = "black",
+	}) {
+		super({ position });
 		this.size = size;
 		this.color = color;
 	}

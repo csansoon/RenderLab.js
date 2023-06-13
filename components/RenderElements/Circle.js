@@ -2,8 +2,20 @@ import RenderElement from "../RenderElement.js";
 
 class Circle extends RenderElement {
 
-	constructor(position, radius, color) {
-		super(position);
+	/**
+	 * Creates a new Circle
+	 * @param {Object} position Position of the element
+	 * @param {number} position.x
+	 * @param {number} position.y
+	 * @param {number} radius Radius of the circle
+	 * @param {string} color Color of the circle
+	 */
+	constructor({
+		position = { x: 0, y: 0 },
+		radius = 1,
+		color = "black",
+	}) {
+		super({ position });
 		this.radius = radius;
 		this.color = color;
 	}

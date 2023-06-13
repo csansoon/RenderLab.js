@@ -1,5 +1,5 @@
 import World from './components/World.js';
-import { Box, Circle } from './components/RenderElements.js';
+import { Box, Circle, Square } from './components/RenderElements.js';
 
 
 /* ---------------------------- Create the world ---------------------------- */
@@ -9,12 +9,30 @@ const world = new World();
 
 /* -------------------- Populate the world with elements -------------------- */
 
-world.add(new Box({ x: 0, y: 0 }, { x: 100, y: 100 }, 'red'));
-world.add(new Box({ x: 100, y: 100 }, { x: 100, y: 100 }, 'green'));
-world.add(new Box({ x: 800, y: 200 }, { x: 100, y: 100 }, 'blue'));
+world.add(new Box({
+	position: { x: 0, y: 0 },
+	size: { x: 100, y: 100 },
+	color: "red",
+}));
 
-const circle_element = new Circle({ x: 100, y: 100 }, 50, 'yellow');
-world.add(circle_element);
+world.add(new Box({
+	position: { x: 100, y: 100 },
+	size: { x: 100, y: 100 },
+	color: 'green',
+}));
+
+world.add(new Square({
+	position: { x: 800, y: 200 },
+	size: { x: 100, y: 100 },
+	thickness: 8,
+	color: "blue",
+}));
+
+const circle_element = world.add(new Circle({
+	position: { x: 100, y: 100 },
+	radius: 50,
+	color: 'yellow',
+}));
 
 
 /* ------------------ Create virtual cameras for the world ------------------ */
