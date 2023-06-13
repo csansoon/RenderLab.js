@@ -3,8 +3,12 @@ import Box from './components/RenderElements/Box.js';
 import Circle from './components/RenderElements/Circle.js';
 
 const world = new World();
-const viewport = world.createViewport("#canvas");
-const viewport2 = world.createViewport("#canvas2");
+const viewport = world.createViewport({ element: "#canvas" });
+const viewport2 = world.createViewport({
+	element: "#canvas2", options: {
+		moveOnDrag: false,
+		zoomOnScroll: false,
+} });
 
 const circle_element = new Circle({ x: 100, y: 100 }, 50, 'yellow');
 
@@ -24,6 +28,7 @@ function init() {
 
 	setInterval(update, 1000 / 60);
 }
+
 
 /**
  * Linear interpolation: it returns a value between a and b based on t

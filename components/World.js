@@ -33,14 +33,20 @@ class World {
 	 * @param {boolean} options.zoomOnScroll Whether or not the viewport should zoom when scrolled. Defaults to true
 	 * @returns {Viewport|undefined} The created viewport, or undefined if an error occurred
 	 */
-	createViewport(
+	createViewport({
 		element,
 		position = { x: 0, y: 0 },
 		scale = 1,
 		options = {}
-	) {
+	}) {
 		try {
-			return Viewport.createViewport(element, this, position, scale, options);
+			return Viewport.createViewport({
+				element: element,
+				world: this,
+				position: position,
+				scale: scale,
+				options: options
+			});
 		} catch (e) {
 			console.error(e);
 			return undefined;

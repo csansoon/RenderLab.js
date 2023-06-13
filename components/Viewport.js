@@ -28,13 +28,13 @@ class Viewport {
 	 * @param {boolean} options.moveOnDrag Whether or not the viewport should move when dragged. Defaults to true
 	 * @param {boolean} options.zoomOnScroll Whether or not the viewport should zoom when scrolled. Defaults to true
 	 */
-	static createViewport(
+	static createViewport({
 		element,
 		world,
-		position,
-		scale,
+		position = { x: 0, y: 0 },
+		scale = 1,
 		options = {}
-	) {
+	}) {
 		options = { ...{ // Default options:
 			autoResize: true,
 			moveOnDrag: true,
