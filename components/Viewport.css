@@ -27,3 +27,11 @@
 	
 	outline: 2px solid #3b3b497e;
 }
+
+.viewport.draggable {
+	cursor: grab;
+}
+
+.viewport.draggable.dragging {
+	cursor: grabbing;
+}

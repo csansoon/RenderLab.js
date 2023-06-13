@@ -35,6 +35,14 @@ function lerp(a, b, t) {
 	return a + (b - a) * t;
 }
 
+
+const mousePosition = { x: 0, y: 0 };
+function updateMousePosition(e) {
+	mousePosition.x = e.clientX;
+	mousePosition.y = e.clientY;
+}
+document.addEventListener("mousemove", updateMousePosition);
+
 function update() {
 	const startPosition = circle_element.getPosition();
 	const objectivePosition = viewport.getWorldPosition(mousePosition);
@@ -54,40 +62,3 @@ function update() {
 }
 
 document.addEventListener("DOMContentLoaded", init, false);
-
-
-// Handle mouse inputs
-
-const mousePosition = { x: 0, y: 0 };
-var mouseIsClicked = false;
-
-function handleOnClick(e) {
-	mouseIsClicked = true;
-	canvas.classList.add('active');
-}
-
-function handleOnRelease(e) {
-	mouseIsClicked = false;
-	canvas.classList.remove('active');
-}
-
-function handleOnMove(e) {
-	mousePosition.x = e.clientX;
-	mousePosition.y = e.clientY;
-
-	if (mouseIsClicked) {
-		const delta = { x: -e.movementX, y: -e.movementY };
-		const viewportDelta = viewport.getWorldDelta(delta);
-		viewport.move(viewportDelta);
-	}
-}
-
-function handleScroll(e) {
-	const delta = e.deltaY;
-	viewport.scale({ x: 1 + delta / 1000, y: 1 + delta / 1000 });
-}
-
-document.addEventListener("mousedown", handleOnClick, false);
-document.addEventListener("mouseup", handleOnRelease, false);
-document.addEventListener("mousemove", handleOnMove, false);
-document.addEventListener("wheel", handleScroll, false);

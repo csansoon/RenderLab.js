@@ -21,8 +21,24 @@ class Viewport {
 	 * @param {number} position.x
 	 * @param {number} position.y
 	 * @param {Object} scale Scale of the viewport in the world
+	 * @param {number} scale.x
+	 * @param {number} scale.y
+	 * @param {Object} options Options for the viewport
+	 * @param {boolean} options.autoResize Whether or not the viewport should resize when the window resizes
+	 * @param {boolean} options.moveOnDrag Whether or not the viewport should move when dragged
+	 * @param {boolean} options.zoomOnScroll Whether or not the viewport should zoom when scrolled
 	 */
-	static createViewport(element, world, position, scale) {
+	static createViewport(
+		element,
+		world,
+		position,
+		scale,
+		options = {
+			autoResize: true,
+			moveOnDrag: true,
+			zoomOnScroll: true,
+		}
+	) {
 		if (typeof element === 'string') {
 			element = document.querySelector(element);
 			if (!element) throw new ViewportError(`Element "${element}" not found`);
@@ -43,7 +59,11 @@ class Viewport {
 		console.log("initialized canvas with size", { x: canvas.width, y: canvas.height });
 
 		const viewport = new Viewport(position, size, canvas, world);
-		viewport.addResizeListener();
+
+		// Options
+		if (options.autoResize) viewport.addResizeListener();
+		if (options.moveOnDrag) viewport.addDragListener();
+		if (options.zoomOnScroll) viewport.addZoomListener();
 
 		setTimeout(() => viewport.render(), 0);
 
@@ -252,22 +272,6 @@ class Viewport {
 	 * @returns {void}
 	 */
 	addResizeListener() {
-		// this.addListener('resize', () => {
-		// 	const oldCanvasSize = { x: this.canvas.width, y: this.canvas.height };
-		// 	const newCanvasSize = { x: this.canvas.clientWidth, y: this.canvas.clientHeight };
-
-		// 	this.canvas.width = newCanvasSize.x;
-		// 	this.canvas.height = newCanvasSize.y;
-
-		// 	const newViewportSize = {
-		// 		x: (this.size.x * newCanvasSize.x) / oldCanvasSize.x,
-		// 		y: (this.size.y * newCanvasSize.y) / oldCanvasSize.y,
-		// 	};
-
-		// 	this.setSize(newViewportSize);
-		// });
-
-		// Instead of a resize listener, we use a resize observer for the canvas
 		const resizeObserver = new ResizeObserver(entries => {
 			const oldCanvasSize = { x: this.canvas.width, y: this.canvas.height };
 			const newCanvasSize = { x: this.canvas.clientWidth, y: this.canvas.clientHeight };
@@ -284,6 +288,69 @@ class Viewport {
 		});
 
 		resizeObserver.observe(this.canvas);
+	}
+
+	/**
+	 * Adds a listener to the viewport to move the viewport when the mouse is dragged
+	 * @returns {void}
+	 */
+	addDragListener() {
+		this.canvas.classList.add('draggable');
+
+		let mouseDown = false;
+		let lastMousePosition = undefined;
+
+		this.addListener('mousedown', event => {
+			mouseDown = true;
+			lastMousePosition = { x: event.clientX, y: event.clientY };
+
+			this.canvas.classList.add('dragging');
+		});
+
+		this.addListener('mouseup', () => {
+			mouseDown = false;
+			lastMousePosition = undefined;
+
+			this.canvas.classList.remove('dragging');
+		});
+
+		this.addListener('mousemove', event => {
+			if (!mouseDown) return;
+
+			const mousePosition = { x: event.clientX, y: event.clientY };
+			const delta = {
+				x: lastMousePosition.x - mousePosition.x,
+				y: lastMousePosition.y - mousePosition.y,
+			};
+
+			const worldDelta = this.getWorldDelta(delta);
+			this.move(worldDelta);
+
+			lastMousePosition = mousePosition;
+		});
+
+		this.addListener('mouseenter', () => {
+			mouseDown = false;
+			lastMousePosition = undefined;
+		});
+	}
+
+	/**
+	 * Adds a listener to the viewport to zoom the viewport when the mouse wheel is scrolled
+	 * @returns {void}
+	 */
+	addZoomListener() {
+		let isHovered = false;
+		this.addListener('mouseenter', () => isHovered = true);
+		this.addListener('mouseleave', () => isHovered = false);
+
+		this.addListener('wheel', event => {
+			if (!isHovered) return;
+
+			const delta = event.deltaY;
+			const zoom = 1 + delta / 1000;
+			this.scale(zoom);
+		});
 	}
 
 
