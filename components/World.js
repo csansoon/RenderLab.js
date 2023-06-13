@@ -27,15 +27,20 @@ class World {
 	 * @param {number} position.x
 	 * @param {number} position.y
 	 * @param {number} scale Scale of the viewport in the world
+	 * @param {Object} options Options for the viewport
+	 * @param {boolean} options.autoResize Whether or not the viewport should resize when the window resizes. Defaults to true
+	 * @param {boolean} options.moveOnDrag Whether or not the viewport should move when dragged. Defaults to true
+	 * @param {boolean} options.zoomOnScroll Whether or not the viewport should zoom when scrolled. Defaults to true
 	 * @returns {Viewport|undefined} The created viewport, or undefined if an error occurred
 	 */
 	createViewport(
 		element,
 		position = { x: 0, y: 0 },
-		scale = 1
+		scale = 1,
+		options = {}
 	) {
 		try {
-			return Viewport.createViewport(element, this, position, scale);
+			return Viewport.createViewport(element, this, position, scale, options);
 		} catch (e) {
 			console.error(e);
 			return undefined;

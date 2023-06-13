@@ -20,25 +20,27 @@ class Viewport {
 	 * @param {Object} position Position of the viewport in the world
 	 * @param {number} position.x
 	 * @param {number} position.y
-	 * @param {Object} scale Scale of the viewport in the world
+	 * @param {Object|number} scale Scale of the viewport in the world
 	 * @param {number} scale.x
 	 * @param {number} scale.y
 	 * @param {Object} options Options for the viewport
-	 * @param {boolean} options.autoResize Whether or not the viewport should resize when the window resizes
-	 * @param {boolean} options.moveOnDrag Whether or not the viewport should move when dragged
-	 * @param {boolean} options.zoomOnScroll Whether or not the viewport should zoom when scrolled
+	 * @param {boolean} options.autoResize Whether or not the viewport should resize when the window resizes. Defaults to true
+	 * @param {boolean} options.moveOnDrag Whether or not the viewport should move when dragged. Defaults to true
+	 * @param {boolean} options.zoomOnScroll Whether or not the viewport should zoom when scrolled. Defaults to true
 	 */
 	static createViewport(
 		element,
 		world,
 		position,
 		scale,
-		options = {
+		options = {}
+	) {
+		options = { ...{ // Default options:
 			autoResize: true,
 			moveOnDrag: true,
 			zoomOnScroll: true,
-		}
-	) {
+		}, ...options };
+
 		if (typeof element === 'string') {
 			element = document.querySelector(element);
 			if (!element) throw new ViewportError(`Element "${element}" not found`);
