@@ -25,6 +25,74 @@ class Square extends RenderElement {
 		this.thickness = thickness;
 	}
 
+
+	/* -------------------------------- Get data -------------------------------- */
+
+	/**
+	 * Returns the size of the box
+	 * @returns {Object} Size of the box
+	 * @returns {number} Size.x
+	 * @returns {number} Size.y
+	 */
+	getSize() {
+		return this.size;
+	}
+
+
+	/**
+	 * Returns the color of the box
+	 * @returns {string} Color of the box
+	 */
+	getColor() {
+		return this.color;
+	}
+
+
+	/**
+	 * Returns the thickness of the outline
+	 * @returns {number} Thickness of the outline
+	 */
+	getThickness() {
+		return this.thickness;
+	}
+
+
+	/* ------------------------------- Modify data ------------------------------ */
+
+	/**
+	 * Sets the size of the box
+	 * @param {Object} size Size of the box
+	 * @param {number} size.x
+	 * @param {number} size.y
+	 * @returns {void}
+	 */
+	setSize(size) {
+		this.size = size;
+	}
+
+
+	/**
+	 * Sets the color of the box
+	 * @param {string} color Color of the box
+	 * @returns {void}
+	 */
+	setColor(color) {
+		this.color = color;
+	}
+
+
+	/**
+	 * Sets the thickness of the outline
+	 * @param {number} thickness Thickness of the outline
+	 * @returns {void}
+	 */
+	setThickness(thickness) {
+		this.thickness = thickness;
+	}
+
+
+	/* --------------------------------- Actions -------------------------------- */
+
 	getBoundingBox() {
 		return {
 			left: this.position.x,
@@ -33,6 +101,7 @@ class Square extends RenderElement {
 			bottom: this.position.y + this.size.y
 		};
 	}
+
 
 	render(ctx, offset, scale) {
 		const x = (this.position.x + offset.x) * scale.x;
@@ -47,7 +116,6 @@ class Square extends RenderElement {
 		ctx.fillRect(x, y, this.thickness, height);
 		ctx.fillRect(x + width - this.thickness, y, this.thickness, height);
 		ctx.fillRect(x, y + height - this.thickness, width, this.thickness);
-
 	}
 }
 

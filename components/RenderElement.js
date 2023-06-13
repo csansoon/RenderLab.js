@@ -13,6 +13,22 @@ class RenderElement {
 		this.position = position;
 	}
 
+
+	/* -------------------------------- Get data -------------------------------- */
+
+	/**
+	 * Returns the position of the element
+	 * @returns {Object}
+	 * @returns {number} position.x
+	 * @returns {number} position.y
+	 */
+	getPosition() {
+		return this.position;
+	}
+
+
+	/* ------------------------------- Modify data ------------------------------ */
+
 	/**
 	 * Sets the position of the element
 	 * @param {Object} position Position of the element
@@ -22,6 +38,7 @@ class RenderElement {
 	setPosition(position) {
 		this.position = position;
 	}
+
 
 	/**
 	 * Moves the element
@@ -50,6 +67,8 @@ class RenderElement {
 	}
 
 
+	/* --------------------------------- Actions -------------------------------- */
+
 	/**
 	 * Returns the bounding box of the element
 	 * @returns {Object}
@@ -62,6 +81,7 @@ class RenderElement {
 		throw new Error("getBoundingBox() not implemented");
 	}
 
+	
 	/**
 	 * Renders the element on the given canvas
 	 * @param {CanvasRenderingContext2D} ctx Context to render on

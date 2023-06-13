@@ -20,9 +20,50 @@ class Circle extends RenderElement {
 		this.color = color;
 	}
 
-	getPosition() {
-		return this.position;
+
+	/* -------------------------------- Get data -------------------------------- */
+
+	/**
+	 * Returns the radius of the circle
+	 * @returns {number} Radius of the circle
+	 */
+	getRadius() {
+		return this.radius;
 	}
+
+
+	/**
+	 * Returns the color of the circle
+	 * @returns {string} Color of the circle
+	 */
+	getColor() {
+		return this.color;
+	}
+
+
+	/* ------------------------------- Modify data ------------------------------ */
+
+	/**
+	 * Sets the radius of the circle
+	 * @param {number} radius Radius of the circle
+	 * @returns {void}
+	 */
+	setRadius(radius) {
+		this.radius = radius;
+	}
+
+
+	/**
+	 * Sets the color of the circle
+	 * @param {string} color Color of the circle
+	 * @returns {void}
+	 */
+	setColor(color) {
+		this.color = color;
+	}
+
+
+	/* --------------------------------- Actions -------------------------------- */
 
 	getBoundingBox() {
 		return {
@@ -33,6 +74,7 @@ class Circle extends RenderElement {
 		};
 	}
 
+	
 	render(ctx, offset, scale) {
 		const x = (this.position.x + offset.x) * scale.x;
 		const y = (this.position.y + offset.y) * scale.y;
