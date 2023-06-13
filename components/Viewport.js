@@ -343,15 +343,32 @@ class Viewport {
 	 */
 	addZoomListener() {
 		let isHovered = false;
+		let lastMousePosition = undefined;
+
 		this.addListener('mouseenter', () => isHovered = true);
 		this.addListener('mouseleave', () => isHovered = false);
+
+		this.addListener('mousemove', event => {
+			lastMousePosition = { x: event.clientX, y: event.clientY };
+		});
 
 		this.addListener('wheel', event => {
 			if (!isHovered) return;
 
-			const delta = event.deltaY;
-			const zoom = 1 + delta / 1000;
-			this.scale(zoom);
+			// Zoom in/out at the mouse position
+			const mousePosition = lastMousePosition;
+			const worldMousePosition = this.getWorldPosition(mousePosition);
+			
+			const zoomFactor = 1 + (event.deltaY / 1000);
+			this.scale(zoomFactor);
+
+			const newWorldMousePosition = this.getWorldPosition(mousePosition);
+			const delta = {
+				x: worldMousePosition.x - newWorldMousePosition.x,
+				y: worldMousePosition.y - newWorldMousePosition.y,
+			};
+
+			this.move(delta);
 		});
 	}
 
