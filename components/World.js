@@ -56,7 +56,7 @@ class World {
 	/**
 	 * Adds an element to the world
 	 * @param {RenderElement} element Element to add to the world
-	 * @returns {void}
+	 * @returns {RenderElement} Returns the same element that was added
 	 */
 	add(element) {
 		if (!element.getBoundingBox || !element.render)
