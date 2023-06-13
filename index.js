@@ -1,6 +1,5 @@
 import World from './components/World.js';
-import Box from './components/RenderElements/Box.js';
-import Circle from './components/RenderElements/Circle.js';
+import { Box, Circle } from './components/RenderElements.js';
 
 
 /* ---------------------------- Create the world ---------------------------- */
