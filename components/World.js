@@ -62,6 +62,7 @@ class World {
 		if (!element.getBoundingBox || !element.render)
 			throw new Error("Element must be a RenderElement");
 		this.elements.push(element);
+		return element;
 	}
 
 	/**
