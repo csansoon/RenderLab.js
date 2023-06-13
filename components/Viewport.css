@@ -24,4 +24,6 @@
 	right: calc(0 - var(--viewport-border-width));
 	bottom: calc(0 - var(--viewport-border-width));
 	background-color: #fff;
+	
+	outline: 2px solid #3b3b497e;
 }
