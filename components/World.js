@@ -27,13 +27,19 @@ class World {
 	 * @param {number} position.x
 	 * @param {number} position.y
 	 * @param {number} scale Scale of the viewport in the world
+	 * @returns {Viewport|undefined} The created viewport, or undefined if an error occurred
 	 */
 	createViewport(
 		element,
 		position = { x: 0, y: 0 },
 		scale = 1
 	) {
-		return Viewport.createViewport(element, this, position, scale);
+		try {
+			return Viewport.createViewport(element, this, position, scale);
+		} catch (e) {
+			console.error(e);
+			return undefined;
+		}
 	}
 
 	/**
