@@ -2,16 +2,13 @@ import World from './components/World.js';
 import Box from './components/RenderElements/Box.js';
 import Circle from './components/RenderElements/Circle.js';
 
-const canvas = document.getElementById('canvas');
 const world = new World();
-const viewport = world.getViewport({ x: 0, y: 0 }, { x: window.innerWidth, y: window.innerHeight }, canvas);
+const viewport = world.createViewport("#canvas");
+const viewport2 = world.createViewport("#canvas2");
 
-const circle_element = new Circle({ x: 400, y: 400 }, 100, 'rgba(0, 0, 0, 0.5)');
+const circle_element = new Circle({ x: 100, y: 100 }, 50, 'yellow');
 
 function init() {
-	canvas.width = window.innerWidth;
-	canvas.height = window.innerHeight;
-
 	const red_box = new Box({ x: 0, y: 0 }, { x: 100, y: 100 }, 'red');
 	const green_box = new Box({ x: 100, y: 100 }, { x: 100, y: 100 }, 'green');
 	const blue_box = new Box({ x: 800, y: 200 }, { x: 100, y: 100 }, 'blue');
@@ -23,42 +20,39 @@ function init() {
 	world.add(circle_element);
 
 	viewport.start(60);
+	viewport2.start(60);
 
 	setInterval(update, 1000 / 60);
 }
 
-function resizeCanvas() {
-	const oldCanvasSize = { x: canvas.width, y: canvas.height }
-	const newCanvasSize = { x: window.innerWidth, y: window.innerHeight };
-	
-	canvas.width = window.innerWidth;
-	canvas.height = window.innerHeight;
-
-	const newViewportSize = {
-		x: viewport.size.x * newCanvasSize.x / oldCanvasSize.x,
-		y: viewport.size.y * newCanvasSize.y / oldCanvasSize.y
-	};
-
-	viewport.setSize(newViewportSize);
+/**
+ * Linear interpolation: it returns a value between a and b based on t
+ * @param {number} a Start value
+ * @param {number} b End value
+ * @param {number} t Interpolation value (0-1) It represents the percentage of the interpolation
+ */
+function lerp(a, b, t) {
+	return a + (b - a) * t;
 }
 
 function update() {
 	const startPosition = circle_element.getPosition();
 	const objectivePosition = viewport.getWorldPosition(mousePosition);
 
-	// speeds up if it is further away from the objective
-	const distance = Math.sqrt(Math.pow(objectivePosition.x - startPosition.x, 2) + Math.pow(objectivePosition.y - startPosition.y, 2));
-	const speed = Math.min(0.1 + distance / 1000, 1);
-
 	const delta = {
-		x: (objectivePosition.x - startPosition.x) * speed,
-		y: (objectivePosition.y - startPosition.y) * speed,
+		x: lerp(startPosition.x, objectivePosition.x, 0.25),
+		y: lerp(startPosition.y, objectivePosition.y, 0.1),
 	};
 
-	circle_element.move(delta);
+	circle_element.setPosition(delta);
+
+	// Update the viewport2 position to follow the circle
+	viewport2.setPosition({
+		x: circle_element.getPosition().x - viewport2.size.x / 2,
+		y: circle_element.getPosition().y - viewport2.size.y / 2,
+	});
 }
 
-window.addEventListener("resize", resizeCanvas, false);
 document.addEventListener("DOMContentLoaded", init, false);
 
 

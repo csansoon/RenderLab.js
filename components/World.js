@@ -16,8 +16,24 @@ class World {
 	 * @param {HTMLCanvasElement} canvas Canvas to render the viewport on
 	 * @returns {Viewport}
 	 */
-	getViewport(position, size, canvas) {
+	getViewport(canvas, position, size) {
 		return new Viewport(position, size, canvas, this);
+	}
+
+	/**
+	 * Creates a new viewport for this world in the DOM
+	 * @param {HTMLElement|string} element Element to create the viewport in
+	 * @param {Object} position Position of the viewport in the world
+	 * @param {number} position.x
+	 * @param {number} position.y
+	 * @param {number} scale Scale of the viewport in the world
+	 */
+	createViewport(
+		element,
+		position = { x: 0, y: 0 },
+		scale = 1
+	) {
+		return Viewport.createViewport(element, this, position, scale);
 	}
 
 	/**
@@ -26,7 +42,8 @@ class World {
 	 * @returns {void}
 	 */
 	add(element) {
-		if (!element.getBoundingBox || !element.render) throw new Error("Element must be a RenderElement");
+		if (!element.getBoundingBox || !element.render)
+			throw new Error("Element must be a RenderElement");
 		this.elements.push(element);
 	}
 
@@ -41,9 +58,14 @@ class World {
 	 * @returns {RenderElement[]}
 	 */
 	getElementsInArea(position, size) {
-		return this.elements.filter(element => {
+		return this.elements.filter((element) => {
 			const boundingBox = element.getBoundingBox();
-			return boundingBox.right > position.x && boundingBox.bottom > position.y && boundingBox.left < position.x + size.x && boundingBox.top < position.y + size.y;
+			return (
+				boundingBox.right > position.x &&
+				boundingBox.bottom > position.y &&
+				boundingBox.left < position.x + size.x &&
+				boundingBox.top < position.y + size.y
+			);
 		});
 	}
 }

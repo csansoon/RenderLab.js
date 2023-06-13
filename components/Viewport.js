@@ -1,4 +1,3 @@
-
 class Viewport {
 
 	constructor(position, size, canvas, world) {
@@ -14,6 +13,42 @@ class Viewport {
 		this.current_framerate = undefined;
 		this.last_frame_time = undefined;
 	}
+
+	/**
+	 * Creates the canvas element for the viewport, adds it to the DOM, and returns it
+	 * @param {HTMLElement|string} element Element to create the viewport in
+	 * @param {Object} position Position of the viewport in the world
+	 * @param {number} position.x
+	 * @param {number} position.y
+	 * @param {Object} scale Scale of the viewport in the world
+	 */
+	static createViewport(element, world, position, scale) {
+		if (typeof element === 'string') element = document.querySelector(element);
+		if (!(element instanceof HTMLElement)) throw new Error("Element must be an HTMLElement");
+
+		const canvas = document.createElement('canvas');
+		canvas.classList.add('viewport');
+
+		element.classList.add('viewport_container');
+		element.appendChild(canvas);
+
+		const elementSize = element.getBoundingClientRect();
+		const size = { x: elementSize.width / scale, y: elementSize.height / scale };
+		canvas.width = size.x;
+		canvas.height = size.y;
+
+		console.log("initialized canvas with size", { x: canvas.width, y: canvas.height });
+
+		const viewport = new Viewport(position, size, canvas, world);
+		viewport.addResizeListener();
+
+		setTimeout(() => viewport.render(), 0);
+
+		return viewport;
+	}
+
+
+	/* --------------------------------- Actions -------------------------------- */
 
 	/**
 	 * Sets the position of the viewport in the world
@@ -67,6 +102,9 @@ class Viewport {
 		this.render();
 	}
 
+
+	/* ---------------------------------- Data ---------------------------------- */
+
 	/**
 	 * Gets the position of the viewport in the world for a given position in the viewport
 	 * @param {Object} viewportPosition Position of the viewport
@@ -99,6 +137,9 @@ class Viewport {
 		};
 	}
 
+
+	/* -------------------------------- Rendering ------------------------------- */
+
 	/**
 	 * Renders the viewport
 	 * @returns {void}
@@ -125,7 +166,13 @@ class Viewport {
 			this.ctx.fillText(this.current_framerate.toFixed(2), 10, 20);
 		}
 	}
+	
 
+	/**
+	 * Renders the viewport and schedules the next render for the given framerate
+	 * @param {number} framerate Framerate to render the viewport at (in frames per second)
+	 * @returns {void}
+	 */
 	render_cycle(frametime) {
 		const time = Date.now();
 
@@ -143,6 +190,7 @@ class Viewport {
 		this.last_frame_time = time;
 	}
 
+
 	/**
 	 * Starts rendering the viewport at a given framerate
 	 * @param {number} framerate Framerate to render the viewport at (in frames per second)
@@ -154,6 +202,7 @@ class Viewport {
 		this.render_cycle(frametime);
 	}
 
+
 	/**
 	 * Stops rendering the viewport
 	 * @returns {void}
@@ -164,6 +213,76 @@ class Viewport {
 		this.last_frame_time = undefined;
 		this.current_framerate = undefined;
 	}
+
+
+	/* ------------------------------- Listeners -------------------------------- */
+
+	/**
+	 * Adds a listener to the viewport
+	 * @param {string} event Event to listen to
+	 * @param {Function} callback Callback to call when the event is triggered
+	 * @returns {void}
+	 */
+	addListener(event, callback) {
+		console.log("Adding listener to viewport for event", event);
+		
+		const windowEvents = ['resize'];
+		if (windowEvents.includes(event)) window.addEventListener(event, callback);
+		else this.canvas.addEventListener(event, callback);
+
+	}
+
+	/**
+	 * Removes a listener from the viewport
+	 * @param {string} event Event to remove the listener from
+	 * @param {Function} callback Callback to remove from the event
+	 * @returns {void}
+	 */
+	removeListener(event, callback) {
+		const windowEvents = ['resize'];
+		if (windowEvents.includes(event)) window.removeEventListener(event, callback);
+		else this.canvas.removeEventListener(event, callback);
+	}
+
+	/**
+	 * Adds a listener to the viewport to resize its world size when the canvas is resized
+	 * @returns {void}
+	 */
+	addResizeListener() {
+		// this.addListener('resize', () => {
+		// 	const oldCanvasSize = { x: this.canvas.width, y: this.canvas.height };
+		// 	const newCanvasSize = { x: this.canvas.clientWidth, y: this.canvas.clientHeight };
+
+		// 	this.canvas.width = newCanvasSize.x;
+		// 	this.canvas.height = newCanvasSize.y;
+
+		// 	const newViewportSize = {
+		// 		x: (this.size.x * newCanvasSize.x) / oldCanvasSize.x,
+		// 		y: (this.size.y * newCanvasSize.y) / oldCanvasSize.y,
+		// 	};
+
+		// 	this.setSize(newViewportSize);
+		// });
+
+		// Instead of a resize listener, we use a resize observer for the canvas
+		const resizeObserver = new ResizeObserver(entries => {
+			const oldCanvasSize = { x: this.canvas.width, y: this.canvas.height };
+			const newCanvasSize = { x: this.canvas.clientWidth, y: this.canvas.clientHeight };
+
+			this.canvas.width = newCanvasSize.x;
+			this.canvas.height = newCanvasSize.y;
+
+			const newViewportSize = {
+				x: (this.size.x * newCanvasSize.x) / oldCanvasSize.x,
+				y: (this.size.y * newCanvasSize.y) / oldCanvasSize.y,
+			};
+
+			this.setSize(newViewportSize);
+		});
+
+		resizeObserver.observe(this.canvas);
+	}
+
 
 }
 
