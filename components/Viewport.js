@@ -58,8 +58,6 @@ class Viewport {
 		canvas.width = size.x;
 		canvas.height = size.y;
 
-		console.log("initialized canvas with size", { x: canvas.width, y: canvas.height });
-
 		const viewport = new Viewport(position, size, canvas, world);
 
 		// Options
@@ -249,8 +247,6 @@ class Viewport {
 	 * @returns {void}
 	 */
 	addListener(event, callback) {
-		console.log("Adding listener to viewport for event", event);
-		
 		const windowEvents = ['resize'];
 		if (windowEvents.includes(event)) window.addEventListener(event, callback);
 		else this.canvas.addEventListener(event, callback);
