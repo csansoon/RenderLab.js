@@ -23,8 +23,11 @@ class Viewport {
 	 * @param {Object} scale Scale of the viewport in the world
 	 */
 	static createViewport(element, world, position, scale) {
-		if (typeof element === 'string') element = document.querySelector(element);
-		if (!(element instanceof HTMLElement)) throw new Error("Element must be an HTMLElement");
+		if (typeof element === 'string') {
+			element = document.querySelector(element);
+			if (!element) throw new ViewportError(`Element "${element}" not found`);
+		}
+		if (!(element instanceof HTMLElement)) throw new ViewportError("Element must be an HTMLElement");
 
 		const canvas = document.createElement('canvas');
 		canvas.classList.add('viewport');
@@ -166,7 +169,7 @@ class Viewport {
 			this.ctx.fillText(this.current_framerate.toFixed(2), 10, 20);
 		}
 	}
-	
+
 
 	/**
 	 * Renders the viewport and schedules the next render for the given framerate
@@ -287,3 +290,11 @@ class Viewport {
 }
 
 export default Viewport;
+
+
+class ViewportError extends Error {
+	constructor(message) {
+		super(message);
+		this.name = "ViewportError";
+	}
+}
