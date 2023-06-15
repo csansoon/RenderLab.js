@@ -15,7 +15,7 @@ class CellularAutomata {
 		this.height = height;
 
 		this.cell_size = cell_size;
-		this.cell_color = ["white", "black"];
+		this.cell_color = ["white", "#28233a"];
 
 		this.elements = new Array(width);
 		this.grid = new Array(width);
@@ -33,8 +33,8 @@ class CellularAutomata {
 						y: this.position.y + j * this.cell_size,
 					},
 					size: {
-						x: this.cell_size,
-						y: this.cell_size,
+						x: this.cell_size + 1,
+						y: this.cell_size + 1,
 					},
 					color: this.cell_color[value % this.cell_color.length],
 				});
