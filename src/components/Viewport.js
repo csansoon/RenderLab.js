@@ -1,5 +1,13 @@
 import { Square } from './RenderElements.js';
 
+// add Viewport.css to the DOM if it isn't already
+if (!document.querySelector('link[href="Viewport.css"]')) {
+	const link = document.createElement('link');
+	link.rel = 'stylesheet';
+	link.href = "/src/components/Viewport.css";
+	document.head.appendChild(link);
+}
+
 class Viewport {
 
 	constructor(position, size, canvas, world, renderElement = undefined) {
@@ -72,7 +80,6 @@ class Viewport {
 		if (options.autoResize) viewport.addResizeListener();
 		if (options.moveOnDrag) viewport.addDragListener();
 		if (options.zoomOnScroll) viewport.addZoomListener();
-		console.log("visible on world", options.visibleOnWorld);
 		if (options.visibleOnWorld) {
 			viewport.renderElement = options.representationElement;
 			viewport.renderElement.setPosition(position);

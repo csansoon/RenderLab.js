@@ -1,5 +1,5 @@
-import World from './components/World.js';
-import { Box, Circle, Square } from './components/RenderElements.js';
+import World from '../../src/components/World.js';
+import { Box, Circle, Square } from "../../src/components/RenderElements.js";
 
 
 /* ---------------------------- Create the world ---------------------------- */
