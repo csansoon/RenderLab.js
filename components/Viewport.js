@@ -203,7 +203,11 @@ class Viewport {
 
 		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 		renderElements.forEach(element => {
-			element.render(this.ctx, offset, scale);
+			try {
+				element.render(this.ctx, offset, scale);
+			} catch (e) {
+				console.error(e);
+			}
 		});
 
 		if (this.current_framerate) {
